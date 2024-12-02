@@ -47,6 +47,7 @@ namespace Mastermind
                  MessageBoxButton.OK,
                  MessageBoxImage.Information
              );
+            StartGame();
             Random number = new Random();
             secretCode = Enumerable.Range(0, 4)
                              .Select(_ => colors[number.Next(colors.Length)])
@@ -291,22 +292,6 @@ namespace Mastermind
             }
         }
 
-        private Brush GetFeedbackBorder(string color, int index)
-        {
-            if (color == secretCode[index])
-            {
-                return Brushes.DarkRed;
-            }
-            else if (secretCode.Contains(color))
-            {
-                return Brushes.Wheat;
-            }
-            else
-            {
-                return Brushes.Transparent;
-            }
-        }
-
         // --------------------------- Debugging Methods ---------------------------
 
         private void Toggledebug()
@@ -355,6 +340,7 @@ namespace Mastermind
         private void StartGame()
         {
 
+            Microsoft.VisualBasic.Interaction.InputBox("Geef naam in.", "Player?");
         }
         
     }
