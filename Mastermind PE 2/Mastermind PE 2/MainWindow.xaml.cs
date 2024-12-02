@@ -339,36 +339,7 @@ namespace Mastermind
             clickedEllipse.Fill = ellipseColor[nextColorIndex];
         }
 
-        // --------------------------- Closing Confirmation ---------------------------
-
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-        {
-            StopCountDown();
-            if (attempts < 10)
-            {
-                MessageBoxResult result = MessageBox.Show("Wilt u het spel vroegtijdig stoppen?",
-                                                          "QUITER????",
-                                                          MessageBoxButton.YesNo,
-                                                          MessageBoxImage.Warning);
-
-                if (result == MessageBoxResult.Yes)
-                {
-
-                    base.OnClosing(e);
-                }
-                else
-                {
-                    timer.Start();
-                    e.Cancel = true;
-                }
-            }
-            else
-            {
-
-                base.OnClosing(e);
-            }
-        }
-
+       
         // --------------------------- Menu Options ---------------------------
 
         private void Close_Click(object sender, RoutedEventArgs e)
@@ -381,6 +352,10 @@ namespace Mastermind
             MessageBox.Show($"", "Mastermind highscores", MessageBoxButton.OK);
         }
 
+        private void StartGame()
+        {
+
+        }
         
     }
 }

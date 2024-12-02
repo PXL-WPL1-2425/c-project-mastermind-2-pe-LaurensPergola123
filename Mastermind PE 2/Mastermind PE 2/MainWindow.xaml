@@ -121,5 +121,9 @@
 
         <!-- Cheat Code Text -->
         <TextBlock x:Name="cheatCode" HorizontalAlignment="Center" VerticalAlignment="Bottom" Visibility="Collapsed" Margin="10" FontSize="16" Foreground="Yellow" FontWeight="Bold"/>
+        
+        <!-- Dialog Window -->
+        <!--<TextBox x:Name="dialogBox" />-->
+
     </Grid>
 </Window>
