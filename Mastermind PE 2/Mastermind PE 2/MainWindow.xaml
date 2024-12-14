@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Mastermind"
         Title="Mastermind" Height="700" Width="900"
-        KeyDown="cheatCode_KeyDown"
+        KeyDown="CheatCode_KeyDown"
         WindowState="Maximized">
 
     <Window.Resources>
@@ -64,16 +64,22 @@
             <!-- Control Button -->
             <RowDefinition Height="Auto"/>
             <!-- Score -->
+            
+            
+            <RowDefinition Height="Auto"/>
+            <!-- Cheatcode -->
             <RowDefinition Height="Auto"/>
             <!-- History Title -->
-            <RowDefinition Height="2*"/>
+            <RowDefinition Height="Auto"/>
             <!-- History Display -->
+            <RowDefinition Height="Auto"/>
+            
         </Grid.RowDefinitions>
         
         <!-- Menu Section -->
         <Menu x:Name="Hoofdmenu" HorizontalAlignment="Left" VerticalAlignment="Top" >
             <MenuItem x:Name="bestandMenu" Header="Bestand" >
-                <MenuItem x:Name="nieuwSpel" Header="Nieuw Spel"/>
+                <MenuItem x:Name="nieuwSpel" Header="Nieuw Spel" Click="StartNewGame_Click"/>
                 <MenuItem x:Name="highScores" Header="Highscores" Click="HighScores_Click"/>
                 <MenuItem x:Name="afsluiten" Header="Afsluiten" Click="Close_Click"/>
             </MenuItem>
@@ -112,15 +118,15 @@
         </StackPanel>
 
         <!-- History Title Section -->
-        <TextBlock Grid.Row="5" Text="Previous Guesses" FontSize="20" Foreground="White" HorizontalAlignment="Center"/>
+        <TextBlock Grid.Row="7" Text="Previous Guesses" FontSize="20" Foreground="White" HorizontalAlignment="Center"/>
 
         <!-- History Display -->
-        <StackPanel Grid.Row="6" x:Name="historyPanel" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10">
+        <StackPanel Grid.Row="8" x:Name="historyPanel" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10">
             <!-- History items will be added here dynamically -->
         </StackPanel>
 
         <!-- Cheat Code Text -->
-        <TextBlock x:Name="cheatCode" HorizontalAlignment="Center" VerticalAlignment="Bottom" Visibility="Collapsed" Margin="10" FontSize="16" Foreground="Yellow" FontWeight="Bold"/>
+        <TextBlock Grid.Row="6" x:Name="cheatCode" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10" FontSize="16" Foreground="Yellow" FontWeight="Bold"/>
         
         <!-- Dialog Window -->
         <!--<TextBox x:Name="dialogBox" />-->

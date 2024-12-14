@@ -15,6 +15,8 @@ namespace Mastermind
         private string[] colors = { "Red", "Yellow", "Orange", "White", "Green", "Blue" };
         private string[] secretCode;
         private List<Brush> ellipseColor = new List<Brush> { Brushes.Red, Brushes.Yellow, Brushes.Orange, Brushes.White, Brushes.Green, Brushes.Blue };
+        private string[] highscores = new string[15];
+        private string spelerNaam;
 
         int attempts = 0;
         int countDown = 10;
@@ -27,26 +29,11 @@ namespace Mastermind
             StartCountDown();
         }
 
+
         // --------------------------- Game Initialization Methods ---------------------------
 
         private void InitializeGame()
         {
-            MessageBox.Show(
-                 "### Spelregels Mastermind\n\n" +
-                 "1. Doel van het spel: Raad de geheime kleurcode bestaande uit 4 kleuren.\n" +
-                 "2. Kleuren: Je kunt kiezen uit 6 kleuren: Rood, Geel, Oranje, Wit, Groen en Blauw.\n" +
-                 "3. Beurten: Je hebt 10 pogingen om de code te raden.\n" +
-                 "4. Feedback:\n" +
-                 "- Rode kleur: Juiste kleur op de juiste plaats.\n" +
-                 "- Witte kleur: Juiste kleur, maar verkeerde plaats.\n" +
-                 "- Geen kleur: Kleur komt niet voor in de code.\n" +
-                 "5. Tijdslimiet: Elke beurt heeft 10 seconden om een gok in te dienen.\n" +
-                 "6. Score: Elke fout verlaagt je score. Het doel is om de code te raden met de hoogste score.\n\n" +
-                 "Veel succes!",
-                 "Welkom bij Mastermind!",
-                 MessageBoxButton.OK,
-                 MessageBoxImage.Information
-             );
             StartGame();
             Random number = new Random();
             secretCode = Enumerable.Range(0, 4)
@@ -98,9 +85,23 @@ namespace Mastermind
 
         private void GameOver()
         {
-            MessageBox.Show($"Game Over! De code was: {string.Join(" ", secretCode)}", "Game Over", MessageBoxButton.OK, MessageBoxImage.Information);
-            InitializeGame();
+            // Voeg de huidige score toe aan de highscores
+            AddHighscore(spelerNaam, attempts, totalScore);
+
+            // Toon een bericht met de optie om een nieuw spel te starten
+            if (MessageBox.Show($"Game Over! De code was: {string.Join(" ", secretCode)}\nWil je een nieuw spel starten?",
+                                "Game Over",
+                                MessageBoxButton.YesNo,
+                                MessageBoxImage.Information) == MessageBoxResult.Yes)
+            {
+                StartNewGame_Click(null, null); // Start een nieuw spel via het menu
+            }
+            else
+            {
+                this.Close(); // Sluit de applicatie als de speler niet wil doorgaan
+            }
         }
+
 
         // --------------------------- Player Interaction Methods ---------------------------
 
@@ -183,10 +184,12 @@ namespace Mastermind
 
             if (correctPosition == 4)
             {
+                AddHighscore(spelerNaam, attempts, totalScore);
                 timer.Stop();
                 if (MessageBox.Show($"Proficiat! Je hebt de code gekraakt in {attempts} pogingen!\rSpel herstarten?",
                                     "WINNER WINNER CHICKEN DINNER", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
                 {
+
                     InitializeGame();
                 }
                 else
@@ -306,7 +309,7 @@ namespace Mastermind
             }
         }
 
-        private void cheatCode_KeyDown(object sender, KeyEventArgs e)
+        private void CheatCode_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.F12)
             {
@@ -332,16 +335,112 @@ namespace Mastermind
             this.Close();
         }
 
+       
+
+        private string StartGame()
+        {
+            string naam = string.Empty;
+
+            while (true)
+            {
+                naam = Microsoft.VisualBasic.Interaction.InputBox(
+                    "Welkom bij Mastermind!\n\nVoer je naam in om te beginnen (druk op Annuleren om het spel niet te starten):",
+                    "Speler Naam",
+                    ""
+                );
+
+                if (string.IsNullOrWhiteSpace(naam))
+                {
+                    if (MessageBox.Show("Je hebt geen naam ingevoerd. Wil je het spel starten zonder te spelen?",
+                                        "Geen Naam Ingegeven",
+                                        MessageBoxButton.YesNo,
+                                        MessageBoxImage.Question) == MessageBoxResult.Yes)
+                        
+
+                    {
+                        
+                        spelerNaam = null; // Geen naam, spel start niet
+                        return null;
+                    }
+                }
+                else
+                {
+                    spelerNaam = naam; // Stel de naam in
+                    MessageBox.Show($"Welkom, {spelerNaam}! Veel succes met Mastermind!", "Speler Naam Geaccepteerd", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return spelerNaam;
+                }
+            }
+        }
+
+        private void AddHighscore(string spelerNaam, int pogingen, int score)
+        {
+            // Maak de nieuwe highscore
+            string nieuweScore = $"{spelerNaam} - {pogingen} pogingen - {score}/100";
+
+            // Zoek de eerste lege plaats in de highscores-array
+            for (int i = 0; i < highscores.Length; i++)
+            {
+                if (highscores[i] == null)
+                {
+                    highscores[i] = nieuweScore;
+                    SortHighscores();
+                    return;
+                }
+            }
+
+            // Als de lijst vol is, vervang de slechtste score
+            highscores[highscores.Length - 1] = nieuweScore;
+            SortHighscores();
+        }
+
+
+        // Sorteer highscores op basis van score
+        private void SortHighscores()
+        {
+            highscores = highscores
+                .Where(h => h != null)
+                .OrderByDescending(h => int.Parse(h.Split('-')[2].Trim().Split('/')[0]))
+                .Concat(Enumerable.Repeat<string>(null, highscores.Length))
+                .Take(highscores.Length)
+                .ToArray();
+        }
+
+
+        private void StartNewGame_Click(object sender, RoutedEventArgs e)
+        {
+            string naam = StartGame();
+
+            if (!string.IsNullOrEmpty(naam))
+            {
+                spelerNaam = naam;
+                Title = $"Mastermind - Speler: {spelerNaam}";
+                InitializeGame();
+                StartCountDown();
+            }
+            else
+            {
+                MessageBox.Show("Het spel is niet gestart. Kies opnieuw 'Nieuw Spel' in het menu om te beginnen.",
+                                "Spel Niet Gestart",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Information);
+            }
+        }
+
         private void HighScores_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show($"", "Mastermind highscores", MessageBoxButton.OK);
+            // Controleer of er highscores zijn
+            if (highscores.All(h => h == null))
+            {
+                MessageBox.Show("Er zijn nog geen highscores!", "Highscores", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            // Toon de highscores
+            string highscoreTekst = string.Join("\n", highscores.Where(h => h != null));
+            MessageBox.Show(highscoreTekst, "Highscores", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        private void StartGame()
-        {
 
-            Microsoft.VisualBasic.Interaction.InputBox("Geef naam in.", "Player?");
-        }
-        
+
     }
 }
