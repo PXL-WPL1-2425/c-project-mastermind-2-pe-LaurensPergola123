@@ -126,6 +126,6 @@
         </StackPanel>
 
         <!-- Cheat Code Text -->
-        <TextBlock Grid.Row="6" x:Name="cheatCode" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10" FontSize="16" Foreground="Yellow" FontWeight="Bold"/>
+        <TextBlock Grid.Row="6" x:Name="cheatCode" Visibility="Hidden" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10" FontSize="16" Foreground="Yellow" FontWeight="Bold"/>
     </Grid>
 </Window>
